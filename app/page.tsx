@@ -13,14 +13,17 @@ export default async function Home() {
   return (
     <>
       <NewEntryForm />
-      <section className="flex flex-col gap-3">
-        <h2 className="font-semibold">방명록 ({entries.length})</h2>
+      <section className="rounded-3xl bg-white px-6 pt-6 pb-1">
+        <h2 className="text-[19px] font-bold text-[#191f28]">
+          남겨진 글 <span className="text-[#3182f6]">{entries.length}</span>
+        </h2>
         {entries.length === 0 ? (
-          <p className="rounded-xl border border-dashed border-zinc-300 p-6 text-center text-sm text-zinc-500 dark:border-zinc-700">
-            아직 방명록 글이 없습니다. 첫 글을 남겨 보세요!
+          <p className="py-12 text-center text-[15px] text-[#8b95a1]">
+            아직 방명록 글이 없습니다.
+            <br />첫 번째 글을 남겨 보세요.
           </p>
         ) : (
-          <ul className="flex flex-col gap-3">
+          <ul className="divide-y divide-[#f2f4f6]">
             {entries.map((entry) => (
               <EntryItem
                 key={entry.id}

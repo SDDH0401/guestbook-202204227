@@ -1,7 +1,10 @@
 export const inputClass =
-  "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900";
+  "w-full rounded-xl bg-[#f2f4f6] px-4 py-3.5 text-[15px] text-[#191f28] placeholder:text-[#b0b8c1] outline-none transition focus:bg-white focus:ring-2 focus:ring-[#3182f6]";
 export const primaryButton =
-  "rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900";
-export const ghostButton =
-  "rounded-lg px-3 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800";
-export const dangerButton = "rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white disabled:opacity-50";
+  "rounded-2xl bg-[#3182f6] px-5 py-4 text-[16px] font-semibold text-white transition active:scale-[0.98] hover:bg-[#1b64da] disabled:bg-[#b0b8c1]";
+export const secondaryButton =
+  "rounded-xl bg-[#e8f3ff] px-4 py-2.5 text-[14px] font-semibold text-[#1b64da] transition hover:bg-[#dbeaff] disabled:opacity-50";
+export const dangerButton =
+  "rounded-xl bg-[#f04452] px-4 py-2.5 text-[14px] font-semibold text-white transition hover:bg-[#d22030] disabled:opacity-50";
+export const quietButton =
+  "rounded-lg px-2.5 py-1.5 text-[13px] font-medium text-[#8b95a1] transition hover:bg-[#f2f4f6] hover:text-[#4e5968]";
