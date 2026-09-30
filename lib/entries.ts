@@ -81,23 +81,30 @@ export function createEntryStore(db: Db, { now = () => new Date() }: { now?: () 
       const errors = validateMessage(message);
       if (errors.length > 0) return { errors };
 
-      const check = await checkPassword(input.id, input.password);
-      if (check !== "ok") return check;
+      const passwordCheck = await checkPassword(input.id, input.password);
+      if (passwordCheck !== "ok") return passwordCheck;
 
-      await db.query("update entries set message = $1, updated_at = $2 where id = $3", [message, now(), input.id]);
-      return "edited";
+      // 확인과 수정 사이에 글이 지워졌으면 바뀐 행이 없다.
+      const updated = await db.query("update entries set message = $1, updated_at = $2 where id = $3 returning id", [
+        message,
+        now(),
+        input.id,
+      ]);
+      return updated.length > 0 ? "edited" : "not-found";
     },
 
     async deleteEntry(input: { id: number; password: string }): Promise<DeleteOutcome> {
-      const check = await checkPassword(input.id, input.password);
-      if (check !== "ok") return check;
+      const passwordCheck = await checkPassword(input.id, input.password);
+      if (passwordCheck !== "ok") return passwordCheck;
 
-      await db.query("delete from entries where id = $1", [input.id]);
-      return "deleted";
+      const deleted = await db.query("delete from entries where id = $1 returning id", [input.id]);
+      return deleted.length > 0 ? "deleted" : "not-found";
     },
   };
 
   async function checkPassword(id: number, password: string): Promise<"ok" | PasswordFailure> {
+    // id는 클라이언트에서 오므로 정수가 아니면 DB에 묻지 않고 없는 글로 본다.
+    if (!Number.isSafeInteger(id) || id <= 0) return "not-found";
     const [row] = await db.query<{ password_hash: string }>("select password_hash from entries where id = $1", [id]);
     if (!row) return "not-found";
     return (await verifyPassword(password, row.password_hash)) ? "ok" : "wrong-password";

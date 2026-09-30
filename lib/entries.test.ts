@@ -189,3 +189,13 @@ describe("삭제", () => {
     expect(await entries.deleteEntry({ id, password: "1234" })).toBe("not-found");
   });
 });
+
+describe("조작된 글 id", () => {
+  it.each([Number.NaN, 1.5, -1, 0, Number.MAX_SAFE_INTEGER + 2])("id가 %s면 수정·삭제 모두 not-found다", async (id) => {
+    await write("동현", "안전", "1234");
+
+    expect(await entries.editEntry({ id, message: "hi", password: "1234" })).toBe("not-found");
+    expect(await entries.deleteEntry({ id, password: "1234" })).toBe("not-found");
+    expect(await entries.listEntries()).toHaveLength(1);
+  });
+});

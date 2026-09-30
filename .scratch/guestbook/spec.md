@@ -76,3 +76,13 @@
 
 - GitHub repo / Vercel 프로젝트 / Neon 프로젝트 이름은 모두 `guestbook-202204227`.
 - Vercel에는 Neon 연동으로 `DATABASE_URL`이 들어가야 하며, 스키마는 `npm run db:migrate`로 미리 적용해 둔다.
+
+## Comments
+
+### /code-review (f60b89e...946956f)
+
+**Standards**: 문서화된 규칙(ADR-0001/0002, AGENTS.md의 Next.js 문서) 위반 없음. 실제 문제 1건: Server Action에 bind된 글 id를 런타임 검증하지 않아, 조작된 id가 오면 bigint 비교에서 500이 난다 → **반영** (store에서 안전한 양의 정수가 아니면 not-found). 판단 영역 스멜(Duplicated Code: store 생성/폼 footer, 결과 타입 3종 불일치로 인한 분기, Data Clumps `{id, password}`, Mysterious Name `check`) → `check`만 `passwordCheck`로 개명, 나머지는 규모 대비 이득이 작아 보류.
+
+**Spec**: 차단급 누락 없음. CRUD 4개 흐름과 비밀번호 불일치 안내 모두 스펙대로 동작. 반영: 이미 삭제된 글에 수정·삭제 시 목록을 재검증해 그 글이 사라지게 함, 비밀번호 확인과 UPDATE/DELETE 사이에 글이 지워지는 경합을 `returning`으로 감지. 보류: 검증 오류 시 비밀번호 칸만 비워지는 것(의도: 비밀번호는 다시 입력), 목록 개수 표시 등 사소한 추가 UI.
+
+**Summary**: Standards 1건 반영(가장 심각: 미검증 id), Spec 2건 반영(가장 심각: 삭제된 글이 목록에 남음).

@@ -33,15 +33,16 @@ export async function editEntryAction(id: number, prev: EditState, formData: For
     revalidatePath("/");
     return { error: null, message, done: true, version };
   }
+  // 이미 지워진 글이면 목록도 새로 고쳐 그 글이 사라지게 한다.
+  if (outcome === "not-found") revalidatePath("/");
   const error = typeof outcome === "string" ? FAILURE_MESSAGES[outcome] : outcome.errors.join(" ");
   return { error, message, done: false, version };
 }
 
 export async function deleteEntryAction(id: number, prev: DeleteState, formData: FormData): Promise<DeleteState> {
   const outcome = await store().deleteEntry({ id, password: text(formData, "password") });
-  if (outcome === "deleted") {
-    revalidatePath("/");
-    return { error: null, version: prev.version + 1 };
-  }
+  // 삭제됐거나 이미 지워진 글이면 목록을 새로 고친다.
+  if (outcome !== "wrong-password") revalidatePath("/");
+  if (outcome === "deleted") return { error: null, version: prev.version + 1 };
   return { error: FAILURE_MESSAGES[outcome], version: prev.version + 1 };
 }
